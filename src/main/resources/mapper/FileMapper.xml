@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.FileMapper">
+
+    <insert id="uploadFile" parameterType="MyFile">
+        insert into file(username,size,filename) values(#{username},#{size},#{filename})
+        <selectKey resultType="int" keyProperty="id" order="AFTER">
+            select last_insert_id()
+        </selectKey>
+    </insert>
+
+    <select id="listFile" resultType="MyFile">
+        select id,filename,username,size from file where username=#{username}
+    </select>
+</mapper>
