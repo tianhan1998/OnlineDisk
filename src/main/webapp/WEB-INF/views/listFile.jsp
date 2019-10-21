@@ -27,7 +27,19 @@
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> ${sessionScope.username} <span class="c-gray en">&gt;</span> 偷题列表 </nav>
 <div class="page-container">
 
-    <div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="1"><a style="margin-right: 5px;"href="${pageContext.request.contextPath}\Exit" class="btn btn-danger radius"><i class="Hui-iconfont"></i> 退出</a><a onclick="member_show('上传文件','${pageContext.request.contextPath}/upload','10001','500','300')" target="_blank" class="btn btn-primary radius"><i class="icon-trash"></i>上传文件</a></span> </div>
+    <div class="cl pd-5 bg-1 bk-gray mt-20">
+        <span class="1">
+            <a style="margin-right: 5px;"href="${pageContext.request.contextPath}\Exit" class="btn btn-danger radius"><i class="Hui-iconfont"></i> 退出</a>
+            <a onclick="member_show('上传文件','${pageContext.request.contextPath}/upload','10001','500','300')" target="_blank" class="btn btn-primary radius"><i class="icon-trash"></i>上传文件</a>
+            <c:if test="${Error!=null||Message!=null}">
+                <label style="color: red">${Error==null?Message:Error}<label/>
+                ${requestScope.remove("Error")}
+                ${requestScope.remove("Message")}
+                ${sessionScope.remove("Error")}
+                ${sessionScope.remove("Message")}
+            </c:if>
+        </span>
+    </div>
     <div class="mt-20">
         <table class="table table-border table-bordered table-hover table-bg table-sort">
             <thead>
@@ -47,8 +59,8 @@
                     <td>${list.username}</td>
                     <td>${list.size}</td>
                     <td class="td-manage">
-                        <a title="下载" href="${pageContext.request.contextPath}/DownLoad/${list.id}${list.filename}" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
-                        <a title="删除" href="http://qiniu.xwmdream.cn/${list.id}.zip" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6de;</i></a>
+                        <a title="下载" href="${pageContext.request.contextPath}/DownLoad/${list.id}+${list.filename}" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6de;</i></a>
+                        <a title="删除" href="${pageContext.request.contextPath}/DeleteFile/${list.id}+${list.filename}" onclick="return checkDelete()" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
                     </td>
                 </tr>
             </c:forEach>
@@ -78,6 +90,13 @@
         });
 
     });
+    function checkDelete(){
+        if(confirm("您真的要删除吗?")==true){
+            return true;
+        }else{
+            return false;
+        }
+    }
     /*用户-添加*/
     function member_add(title,url,w,h){
         layer_show(title,url,w,h);

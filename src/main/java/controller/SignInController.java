@@ -6,8 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.ModelAndView;
 import service.SignInService;
 
 import javax.servlet.http.Cookie;
@@ -22,12 +22,8 @@ public class SignInController {
     SignInService signInService;
     @Autowired
     HttpServletRequest request;
-    @RequestMapping(value = "/SignIn")
+    @RequestMapping(value = "/SignIn",method = RequestMethod.POST)//表单提交访问界面
     public String signIn(HttpServletResponse response,Model m, String username, String password,String autologin){
-        HttpSession session=request.getSession();
-        if(session.getAttribute("username")!=null){//session有记录直接进入查询
-            return "forward:/ListFile";
-        }
         User user=signInService.signIn(username, password);
         if(user!=null){//登录是否成功
             m.addAttribute("username",username);
@@ -43,4 +39,15 @@ public class SignInController {
         }
         return "login";
     }
+    @RequestMapping("/SignIn")//直接访问界面
+    public ModelAndView signIn(HttpServletRequest request){
+        HttpSession session=request.getSession();
+        if(session.getAttribute("username")!=null){//session有记录直接进入查询
+            return new ModelAndView("redirect:/ListFile");
+        }else{
+            return new ModelAndView("redirect:/");
+        }
+
+    }
+
 }

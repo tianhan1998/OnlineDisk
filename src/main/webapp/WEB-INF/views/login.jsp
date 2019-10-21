@@ -571,6 +571,7 @@
 					<input type="checkbox" name="autologin" value="true" style="margin-bottom:20px">30天自动登录
 					<c:if test="${Error!=null}">
 						<label style="color:red">${Error}</label>
+						${requestScope.remove("Error")}
 					</c:if>
 					<button class="lowin-btn login-btn">
 						登录

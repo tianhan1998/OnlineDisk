@@ -21,7 +21,7 @@ public class HelloController {
         if(target!=null){
             HttpSession session=request.getSession();
             session.setAttribute("username",target.getValue());
-            return "forward:/ListFile";
+            return "redirect:/ListFile";
         }
 
         return "login";

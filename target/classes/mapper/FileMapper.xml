@@ -12,4 +12,8 @@
     <select id="listFile" resultType="MyFile">
         select id,filename,username,size from file where username=#{username}
     </select>
+
+    <delete id="deleteFile" parameterType="String">
+        delete from file where filename=#{filename} and username=#{username}
+    </delete>
 </mapper>

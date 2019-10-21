@@ -17,4 +17,7 @@ public class FileService {
     public List<MyFile>listFile(String username){
         return fileMapper.listFile(username);
     }
+    public boolean deleteFile(String filename,String username){
+        return fileMapper.deleteFile(filename, username);
+    }
 }
