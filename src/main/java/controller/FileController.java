@@ -29,14 +29,18 @@ public class FileController {
     @RequestMapping(value = "/UploadFile",method = RequestMethod.POST)
     public String uploadFile(MultipartFile file, HttpServletRequest request, Model m) throws IOException {
         String username= (String) request.getSession().getAttribute("username");
-        String filename=file.getOriginalFilename();
+        String fakefilename=file.getOriginalFilename();//不带+序号判断的假名字
         String path="C:\\upload\\"+username;
         MyFile myFile=new MyFile();
-        myFile.setFilename(filename);
-        myFile.setSize(String.valueOf(file.getSize()));
         myFile.setUsername(username);
+        myFile.setSize(String.valueOf(file.getSize()));
+        myFile.setFakename(fakefilename);
         fileService.uploadFile(myFile);
-        File uploadfile=new File(path,myFile.getId()+"+"+filename);
+        String truefilename=myFile.getId()+"+"+fakefilename;//带+序号的实际文件名
+        myFile.setPath(path+"\\"+truefilename);
+        myFile.setFilename(truefilename);
+        fileService.updateFile(myFile);
+        File uploadfile=new File(path,myFile.getFilename());
         if(!uploadfile.exists()){
             uploadfile.mkdirs();
         }
@@ -56,52 +60,58 @@ public class FileController {
         return "listFile";
     }
 
-    @RequestMapping(value = "/DownLoad/{filename:.*}")
-    public void downloadFile(HttpServletResponse res,HttpServletRequest req,@PathVariable("filename") String filename) throws IOException {
+    @RequestMapping(value = "/DownLoad/{id}")
+    public void downloadFile(HttpServletResponse res,HttpServletRequest req,@PathVariable("id") String id) throws IOException {
         InputStream inputStream = null;
         try (BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(res.getOutputStream())) {
             HttpSession session = req.getSession();
             String username = (String) session.getAttribute("username");
-            String path = "C:\\upload\\" + username + "\\" + filename;
-            inputStream = new BufferedInputStream(new FileInputStream(new File(path)));
-            StringBuffer stringBuffer = new StringBuffer(filename);
-            stringBuffer = stringBuffer.delete(0, stringBuffer.indexOf("+") + 1);
-            filename = stringBuffer.toString();
-            filename = URLEncoder.encode(filename, "UTF-8");
-            filename = filename.replaceAll("\\+", " ");
-            res.addHeader("Content-Disposition", "attachment;filename=" + filename);
-            res.setContentType("multipart/form-data");
-            int len = 0;
-            while ((len = inputStream.read()) != -1) {
-                bufferedOutputStream.write(len);
-                bufferedOutputStream.flush();
+            MyFile myFile=fileService.findFile(Integer.valueOf(id));
+            if(myFile==null||!(myFile.getUsername().equals(username))){//文件持有者检查
+                req.setAttribute("Error","文件不存在");
+            }
+            else {
+                String filename=myFile.getFakename();//下载框显示假名字
+                String path = myFile.getPath();
+                inputStream = new BufferedInputStream(new FileInputStream(new File(path)));
+                filename = URLEncoder.encode(filename, "UTF-8");
+                filename = filename.replaceAll("\\+", " ");
+                res.addHeader("Content-Disposition", "attachment;filename=" + filename);
+                res.addHeader("Content-Length", myFile.getSize());
+                res.setContentType("multipart/form-data");
+                int len = 0;
+                while ((len = inputStream.read()) != -1) {
+                    bufferedOutputStream.write(len);
+//                    bufferedOutputStream.flush();
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-        }
-        if (inputStream != null) {
-            try {
-                inputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
-    @RequestMapping("/DeleteFile/{filename:.*}")
+    @RequestMapping("/DeleteFile/{id}")
     @Transactional
-    public ModelAndView deleteFile(HttpServletRequest req, @PathVariable("filename")String filename, Model m) throws Exception {
+    public ModelAndView deleteFile(HttpServletRequest req, @PathVariable("id")String id, Model m) throws Exception {
         HttpSession session = req.getSession();
         String username = (String) session.getAttribute("username");
-        String path = "C:\\upload\\" + username + "\\" + filename;
+        MyFile myFile=fileService.findFile(Integer.valueOf(id));
+        if(myFile==null||!(myFile.getUsername().equals(username))){//文件持有者检查
+            session.setAttribute("Error","文件不存在");
+        }
+        String path =myFile.getPath();
         File file = new File(path);
-        StringBuffer stringBuffer = new StringBuffer(filename);
-        stringBuffer = stringBuffer.delete(0, stringBuffer.indexOf("+") + 1);
-        filename = stringBuffer.toString();
         if (!file.exists()) {
             m.addAttribute("Error", "文件不存在");
         } else {
-            if (fileService.deleteFile(filename, username)) {
+            if (fileService.deleteFile(myFile.getId())) {
                 if (file.delete()) {
                     session.setAttribute("Message", "删除成功");
                 } else {

@@ -3,17 +3,25 @@
 <mapper namespace="mapper.FileMapper">
 
     <insert id="uploadFile" parameterType="MyFile">
-        insert into file(username,size,filename) values(#{username},#{size},#{filename})
+        insert into file(username,size,fakename) values(#{username},#{size},#{fakename})
         <selectKey resultType="int" keyProperty="id" order="AFTER">
             select last_insert_id()
         </selectKey>
     </insert>
 
+    <update id="updateFile" parameterType="MyFile">
+        update file set filename=#{filename}, path=#{path} where id=#{id}
+    </update>
+
     <select id="listFile" resultType="MyFile">
-        select id,filename,username,size from file where username=#{username}
+        select id,filename,username,size,path,fakename from file where username=#{username}
     </select>
 
-    <delete id="deleteFile" parameterType="String">
-        delete from file where filename=#{filename} and username=#{username}
+    <delete id="deleteFile" parameterType="int">
+        delete from file where id=#{id}
     </delete>
+
+    <select id="findFile" resultType="MyFile">
+        select id,filename,username,size,path,fakename from file where id=#{id};
+    </select>
 </mapper>

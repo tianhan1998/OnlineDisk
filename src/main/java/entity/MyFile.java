@@ -3,9 +3,29 @@ package entity;
 public class MyFile {
     private String username;
     private String filename;
+
+    public String getFakename() {
+        return fakename;
+    }
+
+    public void setFakename(String fakename) {
+        this.fakename = fakename;
+    }
+
+    private String fakename;
     private String size;
     private Integer id;
-   public Integer getId() {
+    private String path;
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public Integer getId() {
         return id;
     }
 

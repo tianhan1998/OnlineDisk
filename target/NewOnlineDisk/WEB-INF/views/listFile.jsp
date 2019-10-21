@@ -55,12 +55,12 @@
             <c:forEach items="${list }" var="list" varStatus="stat">
                 <tr class="text-c">
                     <td>${list.id }</td>
-                    <td>${list.filename}</td>
+                    <td>${list.fakename}</td>
                     <td>${list.username}</td>
                     <td>${list.size}</td>
                     <td class="td-manage">
-                        <a title="下载" href="${pageContext.request.contextPath}/DownLoad/${list.id}+${list.filename}" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6de;</i></a>
-                        <a title="删除" href="${pageContext.request.contextPath}/DeleteFile/${list.id}+${list.filename}" onclick="return checkDelete()" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
+                        <a title="下载" href="${pageContext.request.contextPath}/DownLoad/${list.id}" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6de;</i></a>
+                        <a title="删除" href="${pageContext.request.contextPath}/DeleteFile/${list.id}" onclick="return checkDelete()" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
                     </td>
                 </tr>
             </c:forEach>
