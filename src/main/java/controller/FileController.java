@@ -61,7 +61,7 @@ public class FileController {
     }
 
     @RequestMapping(value = "/DownLoad/{id}")
-    public void downloadFile(HttpServletResponse res,HttpServletRequest req,@PathVariable("id") String id) throws IOException {
+    public void downloadFile(HttpServletResponse res, HttpServletRequest req, @PathVariable("id") String id) throws IOException {
         InputStream inputStream = null;
         try (BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(res.getOutputStream())) {
             HttpSession session = req.getSession();

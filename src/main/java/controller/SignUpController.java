@@ -1,12 +1,18 @@
 package controller;
 
+import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import entity.User;
+import org.springframework.web.bind.annotation.ResponseBody;
 import service.SignUpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 public class SignUpController {
@@ -28,4 +34,19 @@ public class SignUpController {
         }
         return modelAndView;
     }
+    @RequestMapping(value = "/SignUpCheck",method = RequestMethod.POST)
+    @ResponseBody
+    public Map signUp(String username){
+        System.out.println(username);
+        JSONObject json=new JSONObject();
+        User user=service.signUpCheck(username);
+        if(user!=null){
+            json.put("Message","用户名已存在");
+        }else{
+            json.put("Message","此用户名可以注册");
+        }
+        return json;
+    }
+
+
 }

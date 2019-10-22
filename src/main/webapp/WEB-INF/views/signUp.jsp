@@ -548,6 +548,7 @@
 			}
 		}
 	</style>
+	<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.js" type="text/javascript"></script>
 </head>
 
 <body>
@@ -562,17 +563,19 @@
 					<p>注册</p>
 					<div class="lowin-group">
 						<label>姓名</label>
-						<input type="text"  name="username" class="lowin-input" placeholder="输入您的姓名">
+						<input id="usernamecheck" onblur="checkUserName(this)" type="text"  name="username" class="lowin-input" placeholder="输入您的姓名">
+						<label id="message"></label>
 					</div>
 					<div class="lowin-group password-group">
 						<label>密码</label>
 						<input type="password"  name="password" class="lowin-input" placeholder="输入您的密码">
 					</div>
 <%--					<input type="checkbox" name="autologin" value="true" style="margin-bottom:20px">30天自动登录--%>
-						<c:if test="${Error!=null}">
-							<label style="color:red">${Error}</label>
+					<label id="tip" style="color:red"><c:if test="${Error!=null}">
+							${Error}
 							${requestScope.clear()}
 						</c:if>
+					</label>
 					<button class="lowin-btn login-btn">
 					    注册
 					</button>
@@ -616,6 +619,27 @@
 		}else if(form.password.value==""){
 			alert("用户名和密码不能为空");
 			return false;
+		}
+	}
+	function checkUserName(obj) {
+	    var string=obj.value;
+		var label = $('#message');
+		if(string.length!=0){
+	    $.post(
+	    		'${pageContext.request.contextPath}/SignUpCheck',
+				{'username':string},
+				function(result){
+					label.html(result.Message);
+					if(result.Message=="用户名已存在") {
+						label.attr("style", "color:red");
+					}else{
+						label.attr("style", "color:green");
+					}
+
+	    		}
+			);
+		}else{
+			label.html("");
 		}
 	}
 </script>
