@@ -66,3 +66,9 @@ try(BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(res.get
 2. @Pathvariable会丢参数
 3. @Transactional要放到不仅有扫描注解而且还要有扫描事务注解的xml对应的层上
 4. try-with-resources语法糖不会关不上流
+## 第三天
+***
+### 第三天实现
+- ajax判断注册用户名是否重复
+***
+现学现造的，虽然功能很简单，但由于我用js和jquery的时候非常少，所以这个简单功能写了好几个小时，主要就是前端js老是写错，然后还没有什么提示，就得猜。其次就是对jquery的不熟悉，要操纵label的话，不能用val修改，要用html。而且选择器的#老是忘。有点头疼
