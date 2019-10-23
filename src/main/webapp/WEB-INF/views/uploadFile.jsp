@@ -17,10 +17,11 @@
 <form action="${pageContext.request.contextPath}/UploadFile" method="post" enctype="multipart/form-data">
     <div class="form-group">
         <label for="UploadFile">选择文件</label>
-        <input type="file" id="UploadFile" name="file">
+        <input type="file" id="UploadFile" name="files" multiple="multiple">
         <c:if test="${Message!=null}">
         <p class="help-block">${Message}</p>
         </c:if>
+        <label style="color:red"><c:if test="${Error!=null}">${Error}</c:if></label>
     </div>
     <button type="submit" class="btn btn-default">上传</button>
 </form>

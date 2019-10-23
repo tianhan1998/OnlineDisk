@@ -26,27 +26,55 @@ import java.util.List;
 public class FileController {
     @Autowired
     FileService fileService;
+
     @RequestMapping(value = "/UploadFile",method = RequestMethod.POST)
-    public String uploadFile(MultipartFile file, HttpServletRequest request, Model m) throws IOException {
-        String username= (String) request.getSession().getAttribute("username");
-        String fakefilename=file.getOriginalFilename();//不带+序号判断的假名字
-        String path="C:\\upload\\"+username;
-        MyFile myFile=new MyFile();
-        myFile.setUsername(username);
-        myFile.setSize(String.valueOf(file.getSize()));
-        myFile.setFakename(fakefilename);
-        fileService.uploadFile(myFile);
-        String truefilename=myFile.getId()+"+"+fakefilename;//带+序号的实际文件名
-        myFile.setPath(path+"\\"+truefilename);
-        myFile.setFilename(truefilename);
-        fileService.updateFile(myFile);
-        File uploadfile=new File(path,myFile.getFilename());
-        if(!uploadfile.exists()){
-            uploadfile.mkdirs();
+    public String uploadFiles(MultipartFile [] files,Model m,HttpServletRequest req) throws IOException {
+        int i=0;//上传成功数
+        int j=0;//上传失败数
+        for(MultipartFile file:files){
+            if(uploadFile(file,req,m)){
+                i++;
+            }else{
+                j++;
+            }
         }
-        file.transferTo(uploadfile);
-        m.addAttribute("Message","上传成功");
+        if(i!=0) {
+            m.addAttribute("Message", "上传" + i + "个文件成功!");
+        }
+        if(j!=0){
+            m.addAttribute("Error","上传"+j+"个文件失败");
+        }
         return "uploadFile";
+    }
+    @Transactional
+    public boolean uploadFile(MultipartFile file, HttpServletRequest request, Model m) throws IOException {
+        if(!file.isEmpty()) {//判断文件是否存在
+            String username = (String) request.getSession().getAttribute("username");
+            String fakefilename = file.getOriginalFilename();//不带+序号判断的假名字
+            String path = "C:\\upload\\" + username;
+            MyFile myFile = new MyFile();
+            myFile.setUsername(username);
+            myFile.setSize(String.valueOf(file.getSize()));
+            myFile.setFakename(fakefilename);
+            fileService.uploadFile(myFile);
+            String truefilename = myFile.getId() + "+" + fakefilename;//带+序号的实际文件名
+            myFile.setPath(path + "\\" + truefilename);
+            myFile.setFilename(truefilename);
+            fileService.updateFile(myFile);
+            File uploadfile = new File(path, myFile.getFilename());
+            if (!uploadfile.exists()) {
+                uploadfile.mkdirs();
+            }
+            try {
+                file.transferTo(uploadfile);
+            }catch(Exception e){
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//手动回滚
+                return false;
+            }
+        }else{
+            return false;
+        }
+        return true;
     }
     @RequestMapping("/ListFile")
     public String listFile(HttpServletRequest req,Model m){
