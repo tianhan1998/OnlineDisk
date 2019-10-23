@@ -6,14 +6,48 @@ var Auth = {
 		lowin_login: document.querySelector('.lowin-login'),
 		lowin_wrapper_height: 0,
 		login_link: document.querySelector('.login-link'),
+		update_link: document.querySelector('.update-link'),
 		login_btn: document.querySelector('.login-btn'),
 		register_link: document.querySelector('.register-link'),
+		update_detail: document.querySelector('.update-detail'),
+		lowin_update:document.querySelector('.lowin-update'),
 		password_group: document.querySelector('.password-group'),
 		password_group_height: 0,
 		lowin_register: document.querySelector('.lowin-register'),
 		lowin_footer: document.querySelector('.lowin-footer'),
 		box: document.getElementsByClassName('lowin-box'),
 		option: {}
+	},
+	update(e) {
+		Auth.vars.lowin_login.className += ' lowin-animated';
+		setTimeout(() => {
+			Auth.vars.lowin_login.style.display = 'none';
+		}, 500);
+		Auth.vars.lowin_update.style.display = 'block';
+		Auth.vars.lowin_update.className += ' lowin-animated-flip';
+
+		Auth.setHeight(Auth.vars.lowin_update.offsetHeight + Auth.vars.lowin_footer.offsetHeight);
+
+		e.preventDefault();
+	},
+	updateback(e) {
+		Auth.vars.lowin_update.classList.remove('lowin-animated-flip');
+		Auth.vars.lowin_update.className += ' lowin-animated-flipback';
+		Auth.vars.lowin_login.style.display = 'block';
+		Auth.vars.lowin_login.classList.remove('lowin-animated');
+		Auth.vars.lowin_login.className += ' lowin-animatedback';
+		setTimeout(() => {
+			Auth.vars.lowin_update.style.display = 'none';
+		}, 500);
+
+		setTimeout(() => {
+			Auth.vars.lowin_update.classList.remove('lowin-animated-flipback');
+			Auth.vars.lowin_login.classList.remove('lowin-animatedback');
+		},1000);
+
+		Auth.setHeight(Auth.vars.lowin_login.offsetHeight + Auth.vars.lowin_footer.offsetHeight);
+
+		e.preventDefault();
 	},
 	register(e) {
 		Auth.vars.lowin_login.className += ' lowin-animated';
@@ -92,13 +126,18 @@ var Auth = {
 				Auth.vars.box[i].className += ' lowin-flip';
 			}
 		}
-
-
+		Auth.vars.update_detail.addEventListener("click",(e)=>{
+			Auth.brand();
+			Auth.update(e);
+		});
+		Auth.vars.update_link.addEventListener("click", (e) => {
+			Auth.brand();
+			Auth.updateback(e);
+		});
 		Auth.vars.register_link.addEventListener("click", (e) => {
 			Auth.brand();
 		Auth.register(e);
 	});
-
 		Auth.vars.login_link.addEventListener("click", (e) => {
 			Auth.brand();
 		Auth.login(e);

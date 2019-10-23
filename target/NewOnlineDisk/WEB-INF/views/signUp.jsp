@@ -606,7 +606,7 @@
 	</footer>
 </div>
 
-<script src="front/js/auth.js"></script>
+<script src="front/js/signup.js"></script>
 <script>
 	Auth.init({
 		login_url: '#login',

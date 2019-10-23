@@ -107,7 +107,7 @@
 			-webkit-box-shadow: 0 7px 25px rgba(0, 0, 0, .08);
 			box-shadow: 0 7px 25px rgba(0, 0, 0, .08);
 			padding: 60px 25px 25px 25px;
-			text-align: left;
+			/*text-align: left;*/
 			border-radius: 3px;
 		}
 
@@ -548,6 +548,9 @@
 			}
 		}
 	</style>
+	<script src="${pageContext.request.contextPath}/front/lib/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/front/css/bootstrap.min.css">
+	<script src="${pageContext.request.contextPath}/front/js/bootstrap.min.js"></script>
 </head>
 
 <body>
@@ -581,11 +584,63 @@
 					<a href="" class="register-link">网盘测试</a>
 				</div>
 				<div class="text-foot">
+					<a href="" class="update-detail" style="!important;color: red">更新历史</a>
+				</div>
+				<div class="text-foot">
 					<a href="signUp" class="register-link">注册</a>
 				</div>
 <%--				<div class="text-foot">--%>
 <%--					<a target="_blank" href="tutorial/tutorial.jsp" class="register-link">偷题教程</a>--%>
 <%--				</div>--%>
+			</div>
+		</div>
+		<div class="lowin-box lowin-update">
+			<div class="lowin-box-inner">
+				<div>
+					<button style="" class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+						更新历史
+					</button>
+					<div class="collapse" id="collapseExample">
+						<div class="well" style="overflow: scroll;height: 400px">
+							<label style="!important; color:red">版本1.3</label>
+							<ul>
+								<li>--------------------------------------</li>
+								<li style="!important;text-align: left;font-weight: bold">添加多任务上传</li>
+								<li style="!important;text-align: left;font-weight: bold">在登录界面添加更新历史</li>
+								<li style="!important;text-align: left;font-weight: bold">修复可以上传空文件的bug</li>
+								<li style="!important;text-align: left;font-weight: bold">给上传文件添加了事务(虽然上传一般不出错)</li>
+								<li style="!important;text-align: left;font-weight: bold">前端页面描述修改</li>
+								<li>--------------------------------------</li>
+							</ul>
+							<label style="!important; color:black">版本1.2</label>
+							<ul>
+								<li>--------------------------------------</li>
+								<li style="!important;text-align: left">ajax判断注册用户名是否重复</li>
+								<li style="!important;text-align: left">修复第一次访问/路径下会报500的bug（cookie没有判断null导致空指针）</li>
+								<li>--------------------------------------</li>
+							</ul>
+							<label style="!important; color:black">版本1.1</label>
+							<ul>
+								<li>--------------------------------------</li>
+								<li style="!important;text-align: left">文件的删除功能</li>
+								<li style="!important;text-align: left">上传下载的重写</li>
+								<li style="!important;text-align: left">前端页面修正</li>
+								<li>--------------------------------------</li>
+							</ul>
+							<label style="!important; color:black">版本1.0</label>
+							<ul>
+								<li>--------------------------------------</li>
+								<li style="!important;text-align: left">项目的登录和注册（包括cookie保持登陆状态）</li>
+								<li style="!important;text-align: left">文件的上传和下载</li>
+								<li style="!important;text-align: left">前端页面基本完成</li>
+								<li>--------------------------------------</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="text-foot">
+					<a href="" class="update-link">返回</a>
+				</div>
 			</div>
 		</div>
 		<div class="lowin-box lowin-register">
@@ -598,8 +653,7 @@
 			</div>
 		</div>
 	</div>
-
-	<footer class="lowin-footer">
+		<footer class="lowin-footer">
 	</footer>
 </div>
 
@@ -620,5 +674,6 @@
 		}
 	}
 </script>
+
 </body>
 </html>

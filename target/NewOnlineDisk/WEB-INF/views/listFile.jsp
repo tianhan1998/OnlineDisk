@@ -24,7 +24,7 @@
     <title>用户管理</title>
 </head>
 <body>
-<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> ${sessionScope.username} <span class="c-gray en">&gt;</span> 偷题列表 </nav>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> ${sessionScope.username} <span class="c-gray en">&gt;</span> 文件列表 </nav>
 <div class="page-container">
 
     <div class="cl pd-5 bg-1 bk-gray mt-20">
