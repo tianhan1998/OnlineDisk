@@ -83,3 +83,30 @@ try(BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(res.get
 - 给上传文件添加了事务(虽然上传一般不出错)
 ***
 第四天主要时间花在了前端，后端多文件上传很简单，新方法获取数组然后一个一个调之前的单上传就行了。事务也是注解然后添加一个手动回滚解决，主要是前端，我想添加一个更新列表，在bootstrap里面找了一会儿，也没找到合适的界面，最后还是用现在登陆的模板。制作人员那个360°动画还是挺好看的，我就想照着再做一个界面翻滚，照着已有代码修改，加新的选择器，新的事件监听，css属性修改就按照之前的函数，把对应的选择器名字修改下就好了，没有遇见什么难题。接下来准备搞一个留言功能，所有人可以在这里回复，然后用ajax实现异步刷新换页，明天应该能搞定
+## 第五天
+***
+###第五天实现
+- 增加评论功能
+- 增加了总上传文件大小上限
+- 数据库更换时区
+- 文件大小修改为MB显示
+***
+从第五天开始搞评论（留言？）功能，预计的需求就是所有人都能看到的留言，然后可以点赞，发出人可以删除。从最开始构思建表的时候就想了一会，点赞到底怎么实现，是在评论表里加上点赞id？还是新建一个表。最后上网查询正好发现csdn上有一个帖子询问点赞的数据库表。下面有一位大佬问了新浪的dba这个问题。收获许多，最后决定添加一个点赞表，表内有点赞用户和点赞评论id，可以查询这个表来判断是否点过赞。下面是帖子地址
+
+<https://bbs.csdn.net/topics/391001223>
+
+既然是评论，就要有评论时间，既然有时间，就会有格式转换，果然我又碰到了这个问题。一开始前端往后端转表单时间，时间的获取用jsp的usebean标签 new一个Date类型的bean，然后用fmt:formatDate来格式化。问题来了，一开始往后传数据，后台接到了之后，时间莫名增加了14个小时。感觉是时区的问题，上网查增加8小时、10小时、14小时的都有，解决方法就是在数据库url里把参数改成HongKong，问题解决。但改完之后数据传不到后台了，服务器报错
+
+**Failed to convert value of type 'java.lang.String' to required type 'java.util.Date'**
+
+意思就是前端表单传回来的String格式时间无法转换成Date，解决方法我一开始使用注解里的格式化，但对我无效，最后是使用了@InitBinder创建了一个专门初始化时间的方法来解决的
+```java
+@InitBinder
+	public void initBinder(WebDataBinder binder, WebRequest request) {
+		
+		//转换日期
+		DateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));// CustomDateEditor为自定义日期编辑器
+	}
+```
+搞了好久就弄了个插入评论功能，还是不好做啊。明天准备先搞删除，然后实现点赞，最后看能不能把写评论换成ajax来实现，就不用多刷新页面了
