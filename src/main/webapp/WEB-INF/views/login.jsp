@@ -606,10 +606,9 @@
 							<ul>
 								<li>--------------------------------------</li>
 								<li style="!important;text-align: left;font-weight: bold">增加评论功能</li>
-								<li style="!important;text-align: left;font-weight: bold">增加了上传文件大小上限</li>
+								<li style="!important;text-align: left;font-weight: bold">增加了总上传文件大小上限</li>
 								<li style="!important;text-align: left;font-weight: bold">数据库更换时区</li>
-								<li style="!important;text-align: left;font-weight: bold"></li>
-								<li style="!important;text-align: left;font-weight: bold">前端页面描述修改</li>
+								<li style="!important;text-align: left;font-weight: bold">文件大小修改为MB显示</li>
 								<li>--------------------------------------</li>
 							</ul>
 							<label style="!important; color:black">版本1.3</label>
