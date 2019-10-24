@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.CommonMapper">
+
+    <select id="listCommon" resultType="Common">
+        select id,username,text,good_number,comment_day from common
+    </select>
+
+    <insert id="insertCommon" parameterType="Common">
+        insert into common(username,text,good_number,comment_day) values(#{username},#{text},0,#{comment_day})
+    </insert>
+
+</mapper>

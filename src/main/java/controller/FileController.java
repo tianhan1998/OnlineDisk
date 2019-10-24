@@ -85,7 +85,7 @@ public class FileController {
         }
         List<MyFile> myFiles=fileService.listFile(username);
         m.addAttribute("list",myFiles);
-        return "listFile";
+        return "forward:listCommon";
     }
 
     @RequestMapping(value = "/DownLoad/{id}")

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
     <meta charset="utf-8">
@@ -12,6 +13,7 @@
     <script type="text/javascript" src="/front/lib/html5shiv.js"></script>
     <script type="text/javascript" src="/front/lib/respond.min.js"></script>
     <![endif]-->
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/front/css/comment.css" />
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/front/static/h-ui/css/H-ui.min.css" />
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/front/static/h-ui.admin/css/H-ui.admin.css" />
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/front/lib/Hui-iconfont/1.0.8/iconfont.css" />
@@ -47,7 +49,7 @@
                 <th width="40">ID</th>
                 <th width="170">文件名</th>
                 <th width="50">存储人</th>
-                <th width="70">存储大小</th>
+                <th width="70">存储大小(MB)</th>
                 <th width="50">操作</th>
             </tr>
             </thead>
@@ -57,7 +59,7 @@
                     <td>${list.id }</td>
                     <td>${list.fakename}</td>
                     <td>${list.username}</td>
-                    <td>${list.size}</td>
+                    <td><fmt:formatNumber type="number" value="${list.size/1048576}" maxFractionDigits="2"></fmt:formatNumber></td>
                     <td class="td-manage">
                         <a title="下载" href="${pageContext.request.contextPath}/DownLoad/${list.id}" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6de;</i></a>
                         <a title="删除" href="${pageContext.request.contextPath}/DeleteFile/${list.id}" onclick="return checkDelete()" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
@@ -67,6 +69,43 @@
             </tbody>
         </table>
     </div>
+</div>
+<div class="update_comment">
+    <div class="comment-wrap">
+        <div class="comment-block">
+            <form action="${pageContext.request.contextPath}/insertCommon" method="post" onsubmit="return checkText(this);">
+                <textarea name="text" id="" cols="30" rows="3" placeholder="Say somthing..."></textarea>
+                <input name="username" type="hidden" value="${sessionScope.username}"/>
+                <input name="good_number" value="0" type="hidden"/>
+                <jsp:useBean id="now" class="java.util.Date"/>
+                <input name="comment_day" value="<fmt:formatDate value="${now}" pattern="yyyy-MM-dd HH:mm:ss"/>" type="hidden"/>
+                <input class="btn" type="submit" value="提交评论"/>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="comment">
+    <c:forEach items="${commons}" var="common">
+    <div class="comment-wrap">
+        <div class="comment-block">
+            <label class="comment-user">${common.username}</label>
+            <p class="comment-text">${common.text}</p>
+            <div class="bottom-comment">
+                <div class="comment-date"><fmt:formatDate value="${common.comment_day}" pattern="yyyy-MM-dd HH:mm:ss"/></div>
+                <ul class="comment-actions">
+                    <li class="good">
+                        <p style="display: inline" class="goodnumber">(${common.good_number})</p>
+                        <a href="javascript:function();">
+                        <span class="glyphicon glyphicon-thumbs-up"></span>
+                        </a>
+                    </li>
+                    <li class="complain">Complain</li>
+                    <li class="reply">Reply</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    </c:forEach>
 </div>
 <!--_footer 作为公共模版分离出去-->
 <script type="text/javascript" src="${pageContext.request.contextPath}/front/lib/jquery/1.9.1/jquery.min.js"></script>
@@ -90,6 +129,12 @@
         });
 
     });
+    function checkText(form){
+        if(form.text.value==""){
+            alert("评论不能为空");
+            return false;
+        }
+    }
     function checkDelete(){
         if(confirm("您真的要删除吗?")==true){
             return true;
