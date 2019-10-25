@@ -10,4 +10,20 @@
         insert into common(username,text,good_number,comment_day) values(#{username},#{text},0,#{comment_day})
     </insert>
 
+    <delete id="deleteCommon" parameterType="int">
+        delete from common where id=#{id}
+    </delete>
+
+    <select id="findId" parameterType="int" resultType="Common">
+        select id,username,text,good_number,comment_day,good from common where id=#{id}
+    </select>
+
+    <select id="findGood">
+        select username,common_id from good where username=#{username} and common_id = #{commonid}
+    </select>
+
+    <insert id="insertGood">
+        insert into good(username,common_id) values(#{username},#{commonid})
+    </insert>
+
 </mapper>

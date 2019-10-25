@@ -96,8 +96,12 @@
                     <li class="good">
                         <p style="display: inline" class="goodnumber">(${common.good_number})</p>
                         <a href="javascript:function();">
-                        <span class="glyphicon glyphicon-thumbs-up"></span></a>
+                        <span class="glyphicon glyphicon-thumbs-up"></span>
+                        </a>
                     </li>
+                    <c:if test="${common.username==sessionScope.username}">
+                        <li class="complain"><a href="${pageContext.request.contextPath}/deleteCommon/${common.id}">delete</a></li>
+                    </c:if>
                     <li class="complain">Complain</li>
                     <li class="reply">Reply</li>
                 </ul>

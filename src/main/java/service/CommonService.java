@@ -11,10 +11,28 @@ import java.util.List;
 public class CommonService {
     @Autowired
     CommonMapper commonMapper;
-    public List<Common> listCommon(){
-        return commonMapper.listCommon();
+    public List<Common> listCommon(String username){
+        List<Common> commons= commonMapper.listCommon();
+        for(Common com:commons){
+            if(findGood(username,com.getId())){
+                com.setGood(true);
+            }
+        }
+        return commons;
     }
     public boolean insertCommon(Common common){
         return commonMapper.insertCommon(common);
+    }
+    public boolean deleteCommon(Integer id){
+        return commonMapper.deleteCommon(id);
+    }
+    public Common findId(Integer id){
+        return commonMapper.findId(id);
+    }
+    public boolean findGood(String username,Integer commonid){
+        return commonMapper.findGood(username, commonid);
+    }
+    public boolean insertGood(String username,Integer commonid){
+        return commonMapper.insertGood(username, commonid);
     }
 }

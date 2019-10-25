@@ -8,6 +8,8 @@ import java.util.List;
 public interface CommonMapper {
     List<Common> listCommon();
     boolean insertCommon(Common common);
-    boolean findGood(@Param("userid")Integer userid,@Param("commomid") Integer commonid);
-
+    boolean findGood(@Param("username")String username,@Param("commomid") Integer commonid);
+    boolean deleteCommon(Integer id);
+    Common findId(Integer id);
+    boolean insertGood(@Param("username")String username,@Param("commomid") Integer commonid);
 }

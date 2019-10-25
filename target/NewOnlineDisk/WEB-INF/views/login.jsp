@@ -602,14 +602,23 @@
 					</button>
 					<div class="collapse" id="collapseExample">
 						<div class="well" style="overflow: scroll;height: 400px">
-							<label style="!important; color:red">版本1.3</label>
+							<label style="!important; color:red">版本1.4</label>
 							<ul>
 								<li>--------------------------------------</li>
-								<li style="!important;text-align: left;font-weight: bold">添加多任务上传</li>
-								<li style="!important;text-align: left;font-weight: bold">在登录界面添加更新历史</li>
-								<li style="!important;text-align: left;font-weight: bold">修复可以上传空文件的bug</li>
-								<li style="!important;text-align: left;font-weight: bold">给上传文件添加了事务(虽然上传一般不出错)</li>
-								<li style="!important;text-align: left;font-weight: bold">前端页面描述修改</li>
+								<li style="!important;text-align: left;font-weight: bold">增加评论功能</li>
+								<li style="!important;text-align: left;font-weight: bold">增加了总上传文件大小上限</li>
+								<li style="!important;text-align: left;font-weight: bold">数据库更换时区</li>
+								<li style="!important;text-align: left;font-weight: bold">文件大小修改为MB显示</li>
+								<li>--------------------------------------</li>
+							</ul>
+							<label style="!important; color:black">版本1.3</label>
+							<ul>
+								<li>--------------------------------------</li>
+								<li style="!important;text-align: left">添加多任务上传</li>
+								<li style="!important;text-align: left">在登录界面添加更新历史</li>
+								<li style="!important;text-align: left">修复可以上传空文件的bug</li>
+								<li style="!important;text-align: left">给上传文件添加了事务(虽然上传一般不出错)</li>
+								<li style="!important;text-align: left">前端页面描述修改</li>
 								<li>--------------------------------------</li>
 							</ul>
 							<label style="!important; color:black">版本1.2</label>
