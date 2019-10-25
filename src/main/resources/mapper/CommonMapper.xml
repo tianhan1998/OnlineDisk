@@ -18,12 +18,23 @@
         select id,username,text,good_number,comment_day,good from common where id=#{id}
     </select>
 
-    <select id="findGood">
-        select username,common_id from good where username=#{username} and common_id = #{commonid}
+    <select id="findGood" resultType="boolean">
+        <![CDATA[ select count(gid) from good where username = #{username} and common_id=#{commonid} ]]>
     </select>
 
     <insert id="insertGood">
         insert into good(username,common_id) values(#{username},#{commonid})
     </insert>
 
+    <update id="updateCommonGood" parameterType="int">
+        update common set good=true ,good_number=good_number+1 where id=#{id}
+    </update>
+
+    <delete id="deleteGood">
+        delete from good where #{username}=#{username} and common_id=#{commonid}
+    </delete>
+
+    <update id="unUpdateCommonGood" parameterType="int">
+        update common set good=false, good_number=good_number-1 where id=#{id}
+    </update>
 </mapper>

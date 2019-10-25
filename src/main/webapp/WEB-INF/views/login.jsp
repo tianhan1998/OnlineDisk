@@ -602,13 +602,21 @@
 					</button>
 					<div class="collapse" id="collapseExample">
 						<div class="well" style="overflow: scroll;height: 400px">
-							<label style="!important; color:red">版本1.4</label>
+							<label style="!important; color:red">版本1.5</label>
 							<ul>
 								<li>--------------------------------------</li>
-								<li style="!important;text-align: left;font-weight: bold">增加评论功能</li>
-								<li style="!important;text-align: left;font-weight: bold">增加了总上传文件大小上限</li>
-								<li style="!important;text-align: left;font-weight: bold">数据库更换时区</li>
-								<li style="!important;text-align: left;font-weight: bold">文件大小修改为MB显示</li>
+								<li style="!important;text-align: left;font-weight: bold">增加评论删除功能</li>
+								<li style="!important;text-align: left;font-weight: bold">实现了ajax刷新评论点赞取消功能</li>
+								<li style="!important;text-align: left;font-weight: bold">修复了超过了8小时会掉链接出500错误的bug</li>
+								<li>--------------------------------------</li>
+							</ul>
+							<label style="!important; color:black">版本1.4</label>
+							<ul>
+								<li>--------------------------------------</li>
+								<li style="!important;text-align: left">增加评论功能</li>
+								<li style="!important;text-align: left">增加了总上传文件大小上限</li>
+								<li style="!important;text-align: left">数据库更换时区</li>
+								<li style="!important;text-align: left">文件大小修改为MB显示</li>
 								<li>--------------------------------------</li>
 							</ul>
 							<label style="!important; color:black">版本1.3</label>

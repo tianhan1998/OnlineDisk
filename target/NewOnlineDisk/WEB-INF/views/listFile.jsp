@@ -33,13 +33,15 @@
         <span class="1">
             <a style="margin-right: 5px;"href="${pageContext.request.contextPath}\Exit" class="btn btn-danger radius"><i class="Hui-iconfont"></i> 退出</a>
             <a onclick="member_show('上传文件','${pageContext.request.contextPath}/upload','10001','500','300')" target="_blank" class="btn btn-primary radius"><i class="icon-trash"></i>上传文件</a>
+            <label id="tip" style="color: red">
             <c:if test="${Error!=null||Message!=null}">
-                <label style="color: red">${Error==null?Message:Error}<label/>
+                ${Error==null?Message:Error}
                 ${requestScope.remove("Error")}
                 ${requestScope.remove("Message")}
                 ${sessionScope.remove("Error")}
                 ${sessionScope.remove("Message")}
             </c:if>
+            <label/>
         </span>
     </div>
     <div class="mt-20">
@@ -72,17 +74,17 @@
 </div>
 <div class="update_comment">
     <div class="comment-wrap">
-        <div class="comment-block">
-            <form action="${pageContext.request.contextPath}/insertCommon" method="post" onsubmit="return checkText(this);">
-                <textarea name="text" id="" cols="30" rows="3" placeholder="Say somthing..."></textarea>
-                <input name="username" type="hidden" value="${sessionScope.username}"/>
-                <input name="good_number" value="0" type="hidden"/>
-                <jsp:useBean id="now" class="java.util.Date"/>
-                <input name="comment_day" value="<fmt:formatDate value="${now}" pattern="yyyy-MM-dd HH:mm:ss"/>" type="hidden"/>
-                <input class="btn" type="submit" value="提交评论"/>
-            </form>
-        </div>
+        <div class="comment-block"
+        <form action="${pageContext.request.contextPath}/insertCommon" method="post" onsubmit="return checkText(this);">
+            <textarea name="text" id="" cols="30" rows="3" placeholder="Say somthing..."></textarea>
+            <input name="username" type="hidden" value="${sessionScope.username}"/>
+            <input name="good_number" value="0" type="hidden"/>
+            <jsp:useBean id="now" class="java.util.Date"/>
+            <input name="comment_day" value="<fmt:formatDate value="${now}" pattern="yyyy-MM-dd HH:mm:ss"/>" type="hidden"/>
+            <input class="btn" type="submit" value="提交评论"/>
+        </form>
     </div>
+</div>
 </div>
 <div class="comment">
     <c:forEach items="${commons}" var="common">
@@ -93,14 +95,26 @@
             <div class="bottom-comment">
                 <div class="comment-date"><fmt:formatDate value="${common.comment_day}" pattern="yyyy-MM-dd HH:mm:ss"/></div>
                 <ul class="comment-actions">
-                    <li class="good">
-                        <p style="display: inline" class="goodnumber">(${common.good_number})</p>
-                        <a href="javascript:function();">
-                        <span class="glyphicon glyphicon-thumbs-up"></span>
-                        </a>
+                    <li id="good" class="good">
+                        <c:choose>
+                            <c:when test="${common.good!=true}">
+                                <div style="display: inline" id="good${common.id}">
+                                <p id="goodnumber" style="display: inline" class="goodnumber">(${common.good_number})</p>
+                                <a href="javascript:good(${common.id},${common.good_number});">
+                                <span class="glyphicon glyphicon-thumbs-up"></span></a>
+                                </div>
+                            </c:when>
+                                <c:otherwise>
+                                <div style="display: inline" id="good${common.id}">
+                                <p id="goodnumber" style="display: inline" class="goodnumber">(${common.good_number})</p>
+                                <a href="javascript:ungood(${common.id},${common.good_number});">
+                                <span class="glyphicon glyphicon-thumbs-up isgood"></span></a>
+                                </div>
+                                </c:otherwise>
+                        </c:choose>
                     </li>
                     <c:if test="${common.username==sessionScope.username}">
-                        <li class="complain"><a href="${pageContext.request.contextPath}/deleteCommon/${common.id}">delete</a></li>
+                        <li class="complain"><a onclick="return checkDelete();" href="${pageContext.request.contextPath}/deleteCommon/${common.id}">Delete</a></li>
                     </c:if>
                     <li class="complain">Complain</li>
                     <li class="reply">Reply</li>
@@ -121,6 +135,54 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/front/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/front/lib/laypage/1.2/laypage.js"></script>
 <script type="text/javascript">
+    function good(id,goodnumber){
+        var tip=$('#tip');
+        var good=$('#good'+id);
+        var targeturl='${pageContext.request.contextPath}/goodCommon';
+        $.ajax({
+            url:targeturl,
+            type:'post',
+            data:{'id':id},
+            dataType:'json',
+            success:function (result) {
+                if("true"==result.success){
+                    tip.html(result.Message);
+                    good.html("");
+                    var targetnumber=parseInt(goodnumber)+1;
+                    var html1="<p id=\"goodnumber\" style=\"display: inline\" class=\"goodnumber\""+">("+targetnumber+")</p>";
+                    var html2="<a href=\"javascript:ungood("+id+","+targetnumber+");\">";
+                    var html3="<span class=\"glyphicon glyphicon-thumbs-up isgood\"></span></a>";
+                    good.html(html1+html2+html3);
+                }else{
+                    tip.html(result.Error);
+                }
+            }
+        });
+    }
+    function ungood(id,goodnumber){
+        var tip=$('#tip');
+        var good=$('#good'+id);
+        var targeturl='${pageContext.request.contextPath}/unGoodCommon';
+        $.ajax({
+            url:targeturl,
+            type:'post',
+            data:{'id':id},
+            dataType:'json',
+            success:function (result) {
+                if("true"==result.success){
+                    tip.html(result.Message);
+                    good.html("");
+                    var targetnumber=parseInt(goodnumber)-1;
+                    html1="<p id=\"goodnumber\" style=\"display: inline\" class=\"goodnumber\">("+targetnumber+")</p>";
+                    html2="<a href=\"javascript:good("+id+","+targetnumber+");\">";
+                    html3="<span class=\"glyphicon glyphicon-thumbs-up\"></span></a>";
+                    good.html(html1+html2+html3);
+                }else{
+                    tip.html(result.Error);
+                }
+            }
+        });
+    }
     $(function(){
         $('.table-sort').dataTable({
             "aaSorting": [[ 0, "desc" ]],//默认第几个排序

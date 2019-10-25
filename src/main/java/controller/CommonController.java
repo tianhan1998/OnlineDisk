@@ -9,10 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import service.CommonService;
@@ -76,25 +73,75 @@ public class CommonController {
         DateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));// CustomDateEditor为自定义日期编辑器
     }
-    @RequestMapping("/goodCommon/${id}")
+    @RequestMapping(value = "/goodCommon",method = RequestMethod.POST)
     @ResponseBody
-    public Map goodCommon(@PathVariable("id")Integer id, HttpServletRequest req) {
+    public Map goodCommon(Integer id, HttpServletRequest req) {
         JSONObject json = new JSONObject();
         HttpSession session = req.getSession();
         String username = (String) session.getAttribute("username");
         Common common = service.findId(id);
         if (common != null) {
-            if (!common.isGood()) {
-                if (service.insertGood(username, id)) {
-                    json.put("Message", "点赞成功");
+            if(!service.findGood(username,id)){
+                if (!common.isGood()) {
+                    if (service.insertGood(username, id)) {
+                        if (service.updateCommonGood(id)) {
+                            json.put("Message", "点赞成功");
+                            json.put("success", "true");
+                        } else {
+                            json.put("Error", "评论态修改失败");
+                            json.put("success", "false");
+                        }
+                    } else {
+                        json.put("Error", "点赞失败");
+                        json.put("success", "false");
+                    }
                 } else {
-                    json.put("Error", "点赞失败");
+                    json.put("Error", "您已点赞");
+                    json.put("success", "false");
                 }
-            } else {
+            }else{
                 json.put("Error", "您已点赞");
+                json.put("success", "false");
             }
         }else{
             json.put("Error","评论不存在");
+            json.put("success","false");
+        }
+        return json;
+    }
+    @RequestMapping(value = "/unGoodCommon",method = RequestMethod.POST)
+    @ResponseBody
+    public Map unGoodCommon(Integer id, HttpServletRequest req) {
+        JSONObject json = new JSONObject();
+        HttpSession session = req.getSession();
+        String username = (String) session.getAttribute("username");
+        Common common = service.findId(id);
+        if (common != null) {
+            if(service.findGood(username,id)){
+                if (common.isGood()) {
+                    if (service.deleteGood(username, id)) {
+                        if (service.unUpdateCommonGood(id)) {
+                            json.put("Message", "已取消赞");
+                            json.put("success", "true");
+                        } else {
+                            json.put("Error", "评论态修改失败");
+                            json.put("success", "false");
+                        }
+                    } else {
+                        json.put("Error", "取消赞失败");
+                        json.put("success", "false");
+                    }
+                } else {
+                    json.put("Error", "您已取消");
+                    json.put("success", "false");
+                }
+            }else{
+                json.put("Error", "您已取消");
+                json.put("success", "false");
+            }
+        }else{
+            json.put("Error","评论不存在");
+            json.put("success","false");
         }
         return json;
     }

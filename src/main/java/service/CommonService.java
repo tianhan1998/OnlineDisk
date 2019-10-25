@@ -35,4 +35,13 @@ public class CommonService {
     public boolean insertGood(String username,Integer commonid){
         return commonMapper.insertGood(username, commonid);
     }
+    public boolean updateCommonGood(Integer id){
+        return commonMapper.updateCommonGood(id);
+    }
+    public boolean deleteGood(String username,Integer commonid){
+        return commonMapper.deleteGood(username, commonid);
+    }
+    public boolean unUpdateCommonGood(Integer id){
+        return commonMapper.unUpdateCommonGood(id);
+    }
 }
