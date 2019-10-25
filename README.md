@@ -110,3 +110,16 @@ try(BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(res.get
 	}
 ```
 搞了好久就弄了个插入评论功能，还是不好做啊。明天准备先搞删除，然后实现点赞，最后看能不能把写评论换成ajax来实现，就不用多刷新页面了
+## 第六天
+### 第六天实现
+- 增加评论删除功能
+- 实现了ajax刷新评论点赞取消功能
+- 修复了超过了8小时会掉链接出500错误的bug
+***
+修复8小时掉线，c3p0添加三个属性
+```xml
+	<property name="testConnectionOnCheckin" value="false"></property>
+        <property name="testConnectionOnCheckout" value="true"></property>
+        <property name="idleConnectionTestPeriod" value="4600"></property>
+```
+前端是真的费事。。。ajax如果用restful风格传参好像传不到controller里，还不知道原因，换成post提交表单可以。生成html代码很费劲。。拼接字符串之后用jquery获得div然后用html()函数修改。字符串双引号太多idea都识别不出来谁才是开头和结尾的双引号了。
