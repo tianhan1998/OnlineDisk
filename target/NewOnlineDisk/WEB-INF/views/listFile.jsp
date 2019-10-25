@@ -74,7 +74,7 @@
 </div>
 <div class="update_comment">
     <div class="comment-wrap">
-        <div class="comment-block"
+        <div class="comment-block">
         <form action="${pageContext.request.contextPath}/insertCommon" method="post" onsubmit="return checkText(this);">
             <textarea name="text" id="" cols="30" rows="3" placeholder="Say somthing..."></textarea>
             <input name="username" type="hidden" value="${sessionScope.username}"/>
