@@ -1,5 +1,6 @@
 package controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.mchange.v1.util.ListUtils;
 import entity.Common;
@@ -33,18 +34,25 @@ public class CommonController {
         return "listFile";
     }
     @RequestMapping("/insertCommon")
-    public String insertCommon(Model m, String username, String text, long good_number,Date comment_day, HttpServletRequest req){
+    @ResponseBody
+    public Map insertCommon(String username, String text, long good_number,Date comment_day, HttpServletRequest req){
         Common common=new Common();
         common.setUsername(username);
         common.setText(text);
         common.setGood_number(good_number);
         common.setComment_day(comment_day);
+        String jsonstring= JSON.toJSONString(common);
+        JSONObject json= JSON.parseObject(jsonstring);
+
         if(service.insertCommon(common)){
-            m.addAttribute("Message","评论成功");
+            json.put("success","true");
+            json.put("Message","评论成功");
+            json.put("id",common.getId());
         }else{
-            m.addAttribute("Error","评论失败");
+            json.put("success","false");
+            json.put("Error","评论失败");
         }
-        return "forward:/ListFile";
+        return json;
     }
     @RequestMapping("/deleteCommon/{id}")
     public String deleteCommon(@PathVariable("id")String id,HttpServletRequest req,Model m){

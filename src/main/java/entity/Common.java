@@ -1,5 +1,8 @@
 package entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 
 public class Common {
@@ -7,6 +10,7 @@ public class Common {
     private String username;
     private String text;
     private long good_number;
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date comment_day;
     private boolean good;
 
