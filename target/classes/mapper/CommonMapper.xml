@@ -8,6 +8,9 @@
 
     <insert id="insertCommon" parameterType="Common">
         insert into common(username,text,good_number,comment_day) values(#{username},#{text},0,#{comment_day})
+        <selectKey keyProperty="id" order="AFTER" resultType="int">
+            select last_insert_id()
+        </selectKey>
     </insert>
 
     <delete id="deleteCommon" parameterType="int">

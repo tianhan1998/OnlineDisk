@@ -602,12 +602,18 @@
 					</button>
 					<div class="collapse" id="collapseExample">
 						<div class="well" style="overflow: scroll;height: 400px">
-							<label style="!important; color:red">版本1.5</label>
+							<label style="!important; color:red">版本1.6</label>
 							<ul>
 								<li>--------------------------------------</li>
-								<li style="!important;text-align: left;font-weight: bold">增加评论删除功能</li>
-								<li style="!important;text-align: left;font-weight: bold">实现了ajax刷新评论点赞取消功能</li>
-								<li style="!important;text-align: left;font-weight: bold">修复了超过了8小时会掉链接出500错误的bug</li>
+								<li style="!important;text-align: left;font-weight: bold">把提交评论修改为ajax实现</li>
+								<li>--------------------------------------</li>
+							</ul>
+							<label style="!important; color:black">版本1.5</label>
+							<ul>
+								<li>--------------------------------------</li>
+								<li style="!important;text-align: left">增加评论删除功能</li>
+								<li style="!important;text-align: left">实现了ajax刷新评论点赞取消功能</li>
+								<li style="!important;text-align: left">修复了超过了8小时会掉链接出500错误的bug</li>
 								<li>--------------------------------------</li>
 							</ul>
 							<label style="!important; color:black">版本1.4</label>

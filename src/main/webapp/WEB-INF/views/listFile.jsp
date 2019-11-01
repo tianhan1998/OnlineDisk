@@ -116,8 +116,6 @@
                     <c:if test="${common.username==sessionScope.username}">
                         <li class="complain"><a onclick="return checkDelete();" href="${pageContext.request.contextPath}/deleteCommon/${common.id}">Delete</a></li>
                     </c:if>
-                    <li class="complain">Complain</li>
-                    <li class="reply">Reply</li>
                 </ul>
             </div>
         </div>

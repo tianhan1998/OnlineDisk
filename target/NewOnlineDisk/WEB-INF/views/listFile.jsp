@@ -75,13 +75,13 @@
 <div class="update_comment">
     <div class="comment-wrap">
         <div class="comment-block">
-        <form action="${pageContext.request.contextPath}/insertCommon" method="post" onsubmit="return checkText(this);">
+        <form id="common_form" action="" method="post" onsubmit="return false;">
             <textarea name="text" id="" cols="30" rows="3" placeholder="Say somthing..."></textarea>
             <input name="username" type="hidden" value="${sessionScope.username}"/>
             <input name="good_number" value="0" type="hidden"/>
             <jsp:useBean id="now" class="java.util.Date"/>
             <input name="comment_day" value="<fmt:formatDate value="${now}" pattern="yyyy-MM-dd HH:mm:ss"/>" type="hidden"/>
-            <input class="btn" type="submit" value="提交评论"/>
+            <input class="btn" type="submit" onclick="submitCommon($('#common_form'));" value="提交评论"/>
         </form>
     </div>
 </div>
@@ -116,8 +116,6 @@
                     <c:if test="${common.username==sessionScope.username}">
                         <li class="complain"><a onclick="return checkDelete();" href="${pageContext.request.contextPath}/deleteCommon/${common.id}">Delete</a></li>
                     </c:if>
-                    <li class="complain">Complain</li>
-                    <li class="reply">Reply</li>
                 </ul>
             </div>
         </div>
@@ -135,6 +133,40 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/front/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/front/lib/laypage/1.2/laypage.js"></script>
 <script type="text/javascript">
+    function submitCommon(form){
+        if(form.text.value==""){
+            alert("评论不能为空");
+            return false;
+        }
+        $.ajax({
+            url:"${pageContext.request.contextPath}/insertCommon",
+            dataType:"json",
+            type:"post",
+            data:form.serialize(),
+            success:function(result){
+                if(result.success=="true"){
+                    var target=$('.comment');
+                    var newitem=document.createElement("div");
+                    var html1="<div class=\"comment-wrap\">";
+                    var html2="<div class=\"comment-block\">";
+                    var html3="<label class=\"comment-user\">"+result.username+"</label>";
+                    var html4="<p class=\"comment-text\">"+result.text+"</p>";
+                    var html5="<div class=\"bottom-comment\">";
+                    var html6="<div class=\"comment-date\">"+result.comment_day+"</div>";
+                    var html7="<ul class=\"comment-actions\">";
+                    var html8="<li id=\"good\" class=\"good\">";
+                    var html9="<div style=\"display: inline\" id=\"good"+result.id+"\">";
+                    var html10="<p id=\"goodnumber\" style=\"display: inline\" class=\"goodnumber\">("+result.good_number+")</p>";
+                    var html11="<a href=\"javascript:good("+result.id+","+result.good_number+");\">";
+                    var html12="<span class=\"glyphicon glyphicon-thumbs-up\"></span></a></div>";
+                    var html13="<li class=\"complain\"><a onclick=\"return checkDelete();\" href=\"${pageContext.request.contextPath}/deleteCommon/"+result.id+"\">Delete</a></li>";
+                    var html14="<li class=\"complain\">Complain</li>";
+                    var html15="<li class=\"reply\">Reply</li></ul></div></div></div>";
+                    target.children('.comment-wrap').first().before(html1+html2+html3+html4+html5+html6+html7+html8+html9+html10+html11+html12+html13+html14+html15)
+                }
+            }
+        });
+    }
     function good(id,goodnumber){
         var tip=$('#tip');
         var good=$('#good'+id);
@@ -175,7 +207,7 @@
                     var targetnumber=parseInt(goodnumber)-1;
                     html1="<p id=\"goodnumber\" style=\"display: inline\" class=\"goodnumber\">("+targetnumber+")</p>";
                     html2="<a href=\"javascript:good("+id+","+targetnumber+");\">";
-                    html3="<span class=\"glyphicon glyphicon-thumbs-up\"></span></a>";
+                    html3="<span class=\"glyphicon glyphicon-thumbs-up\"></span></a></li>";
                     good.html(html1+html2+html3);
                 }else{
                     tip.html(result.Error);
@@ -194,12 +226,6 @@
         });
 
     });
-    function checkText(form){
-        if(form.text.value==""){
-            alert("评论不能为空");
-            return false;
-        }
-    }
     function checkDelete(){
         if(confirm("您真的要删除吗?")==true){
             return true;
