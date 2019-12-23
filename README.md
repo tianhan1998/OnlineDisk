@@ -123,3 +123,22 @@ try(BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(res.get
         <property name="idleConnectionTestPeriod" value="4600"></property>
 ```
 前端是真的费事。。。ajax如果用restful风格传参好像传不到controller里，还不知道原因，换成post提交表单可以。生成html代码很费劲。。拼接字符串之后用jquery获得div然后用html()函数修改。字符串双引号太多idea都识别不出来谁才是开头和结尾的双引号了。
+### 第N天实现
+- 修复了点赞的bug
+- 为后端添加了数据验证（防止Postman直接提交表单绕过前端判断空）
+- 优化Dao层代码，添加Good实体类
+- 修改数据库设计，取消Common内部Good字段（实体类没变）
+***
+不知不觉过了一个学期了，后半个学期开发了好几个大项目。再看看半个学期前写的代码，不堪入目。首先JSON的返回格式没有规定好，有Success也有Error也有Message，以后我开发统一为三个字段，data，msg，code。Dao层写的也乱七八糟，返回值不该用boolean，应该用int判断。SSM还是有点麻烦，RestController返回的数据必须为Map类型，如果是fastjson还需要额外配置xml，除非导入jacksoncore包。
+
+验证方面，我光给前端js加了验证，评论的前端甚至写的有问题，如果有人使用postman类似软件直接通过api提交表单，那么就会出错（同学经常这样做）233，添加了后端验证后就不会那么多事了。js和jquery当时果然不太熟，js操纵dom写的乱死了，竟然搞了15个变量来存新增的html代码串。
+
+想想当初的zz操作，ajax不写error回调函数，还像个憨批一样到处说ajax难调试，控制台不输出，智障。
+
+登录态检测不用Filter，反而在每个controller开头取session用if判断，简直是疯了。特别是这种前后端不分离的，后端跳转来跳转去自己都蒙了
+
+Cookie保存登录状态不加密，这样别人直接修改用户名就自动登录别人的账号上了，安全性为零。
+
+寒假再往上加东西的话，就考虑增加一个路径功能吧，也就是文件夹。这个慢慢构思下吧，感觉东西挺多的
+
+更新记录应该写在一个文件里然后从后端读比较好，前端模板找个能支持md的就好了。
