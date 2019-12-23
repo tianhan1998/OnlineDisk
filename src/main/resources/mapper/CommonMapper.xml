@@ -18,11 +18,19 @@
     </delete>
 
     <select id="findId" parameterType="int" resultType="Common">
-        select id,username,text,good_number,comment_day,good from common where id=#{id}
+        select id,username,text,good_number,comment_day from common where id=#{id}
     </select>
 
-    <select id="findGood" resultType="boolean">
-        <![CDATA[ select count(gid) from good where username = #{username} and common_id=#{commonid} ]]>
+    <select id="findGood" resultType="java.lang.Integer">
+         select count(*) from good where username = #{username} and common_id=#{commonid}
+    </select>
+
+    <select id="findGoodByGid" resultType="Good">
+        select gid,username,common_id from good where gid=#{gid}
+    </select>
+
+    <select id="findGoodByNameAndId" resultType="Good">
+        select gid,username,common_id from good where username=#{username} and common_id=#{common_id}
     </select>
 
     <insert id="insertGood">
@@ -30,14 +38,14 @@
     </insert>
 
     <update id="updateCommonGood" parameterType="int">
-        update common set good=true ,good_number=good_number+1 where id=#{id}
+        update common set good_number=good_number+1 where id=#{id}
     </update>
 
     <delete id="deleteGood">
-        delete from good where #{username}=#{username} and common_id=#{commonid}
+        delete from good where gid=#{gid}
     </delete>
 
     <update id="unUpdateCommonGood" parameterType="int">
-        update common set good=false, good_number=good_number-1 where id=#{id}
+        update common set good_number=good_number-1 where id=#{id}
     </update>
 </mapper>

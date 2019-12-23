@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,12 +20,12 @@ public class SignUpController {
     @Autowired
     SignUpService service;
     @RequestMapping(value = "/SignUp",method = RequestMethod.POST)
-    public ModelAndView signUp(String username,String password){
+    public ModelAndView signUp(@Valid User validuser){
         ModelAndView modelAndView =new ModelAndView();
         modelAndView.setViewName("signUp");//默认跳转signUp界面
-        User user=service.signUpCheck(username);
+        User user=service.signUpCheck(validuser.getUsername());
         if(user==null){//检查是否重复
-            if(service.signUp(username,password)){//sql插入
+            if(service.signUp(validuser.getUsername(),validuser.getPassword())){//sql插入
                 modelAndView.setViewName("login");
             }else{
                 modelAndView.addObject("Error","注册失败");

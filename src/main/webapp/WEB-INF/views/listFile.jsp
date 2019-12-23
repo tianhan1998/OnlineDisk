@@ -145,6 +145,7 @@
             data:form.serialize(),
             success:function(result){
                 if(result.success=="true"){
+                    $("#tip").html(result.Message);
                     var target=$('.comment');
                     var newitem=document.createElement("div");
                     var html1="<div class=\"comment-wrap\">";
@@ -163,6 +164,8 @@
                     var html14="<li class=\"complain\">Complain</li>";
                     var html15="<li class=\"reply\">Reply</li></ul></div></div></div>";
                     target.children('.comment-wrap').first().before(html1+html2+html3+html4+html5+html6+html7+html8+html9+html10+html11+html12+html13+html14+html15)
+                }else{
+                    $("#tip").html(result.Error);
                 }
             }
         });
