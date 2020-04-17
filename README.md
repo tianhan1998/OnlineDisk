@@ -142,3 +142,35 @@ Cookie保存登录状态不加密，这样别人直接修改用户名就自动�
 寒假再往上加东西的话，就考虑增加一个路径功能吧，也就是文件夹。这个慢慢构思下吧，感觉东西挺多的
 
 更新记录应该写在一个文件里然后从后端读比较好，前端模板找个能支持md的就好了。
+
+### 第NN天实现
+由于腾讯云要到期了，不准备续费（因为薅了个免费阿里云的服务器）。所以准备搞个服务器迁移。由于老服务器是Windows server，而新服务器是Linux，所以改了下代码。
+
+#### 判断系统
+使用Java原生代码
+```java
+System.getProperty("os.name");//Linux返回Linux Windows10返回Windows 10
+```
+#### 数据库迁移
+打了个.sql文件直接转，由于数据库里存的有文件路径，而Linux文件系统和Windows不太一样，所以把路径统一换了。Linux以/为根目录
+
+#### 文件系统
+Linux以/为根目录，文件分隔符为/，Windows以\分隔，可以从java中直接获取分隔符
+```java
+File.separator//使用separator属性直接获取当前系统的分隔符
+```
+
+#### 中文乱码
+上传好的文件打了个压缩包，通过xshell传给了服务器，但是解压后发现中文文件名全部木大，都是乱码，百度了一下用convmv命令可以直接转。试了下centos7不带，所以还要先yum安装
+```
+yum install convmv  #使用yum安装convmv转码器
+
+convmv -f GBK -t UTF-8 --notest -r /home/test #使用convmv命令转换编码为UTF-8,如果是目录则会全部转换
+```
+
+#### docker容器
+在Linux我是用Docker来安装组件的，tomcat和mysql都是。使用容器数据卷连接一下tomcat的webapps目录，这样方便部署war包
+
+跑了一下，发现登录不了。报错连接不上服务器，看了下代码。localhost没问题啊，都是服务器本机。仔细想了下，Docker容器是沙箱隔离的，一个容器的mysql和另一个容器的tomcat是访问不到的，所以把连接换成了服务器ip，成功登陆
+
+上传，下载，都没问题，没想到这边改完一遍过了。但是下载之前的文件都不行，看数据库，路径没问题啊。想了想还是沙箱隔离的问题，就算运行的是tomcat，内部也有一个自己的centos，每次上传新文件都会到容器中的centos目录中，遂再搞一个容器数据卷，把本机的upload文件夹和tomcat的upload文件夹连接起来，再跑。没问题了。

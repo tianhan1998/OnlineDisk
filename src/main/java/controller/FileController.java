@@ -29,13 +29,22 @@ public class FileController {
 
     @RequestMapping(value = "/UploadFile",method = RequestMethod.POST)
     public String uploadFiles(MultipartFile [] files,Model m,HttpServletRequest req) throws IOException {
+        String os=System.getProperty("os.name");
         int i=0;//上传成功数
         int j=0;//上传失败数
         for(MultipartFile file:files){
-            if(uploadFile(file,req,m)){
-                i++;
-            }else{
-                j++;
+            if(os.contains("Windows")) {
+                if (uploadFile(file, req, m)) {
+                    i++;
+                } else {
+                    j++;
+                }
+            }else if(os.contains("Linux")){
+                if (uploadFileOnLinux(file, req, m)) {
+                    i++;
+                } else {
+                    j++;
+                }
             }
         }
         if(i!=0) {
@@ -59,6 +68,36 @@ public class FileController {
             fileService.uploadFile(myFile);
             String truefilename = myFile.getId() + "+" + fakefilename;//带+序号的实际文件名
             myFile.setPath(path + "\\" + truefilename);
+            myFile.setFilename(truefilename);
+            fileService.updateFile(myFile);
+            File uploadfile = new File(path, myFile.getFilename());
+            if (!uploadfile.exists()) {
+                uploadfile.mkdirs();
+            }
+            try {
+                file.transferTo(uploadfile);
+            }catch(Exception e){
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//手动回滚
+                return false;
+            }
+        }else{
+            return false;
+        }
+        return true;
+    }
+    @Transactional
+    public boolean uploadFileOnLinux(MultipartFile file, HttpServletRequest request, Model m) throws IOException {
+        if(!file.isEmpty()) {//判断文件是否存在
+            String username = (String) request.getSession().getAttribute("username");
+            String fakefilename = file.getOriginalFilename();//不带+序号判断的假名字
+            String path = File.separator+"home"+File.separator+"upload"+File.separator+ username;
+            MyFile myFile = new MyFile();
+            myFile.setUsername(username);
+            myFile.setSize(String.valueOf(file.getSize()));
+            myFile.setFakename(fakefilename);
+            fileService.uploadFile(myFile);
+            String truefilename = myFile.getId() + "+" + fakefilename;//带+序号的实际文件名
+            myFile.setPath(path + File.separator + truefilename);
             myFile.setFilename(truefilename);
             fileService.updateFile(myFile);
             File uploadfile = new File(path, myFile.getFilename());
