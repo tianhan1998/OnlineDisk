@@ -26,4 +26,7 @@ public class FileService {
     public boolean updateFile(MyFile myFile){
         return fileMapper.updateFile(myFile);
     }
+    public MyFile findFileByNameAndUsername(String filename,String username){
+        return fileMapper.findFileByNameAndUsername(filename,username);
+    }
 }

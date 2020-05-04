@@ -1,5 +1,7 @@
 package controller;
 
+import com.mysql.cj.xdevapi.Collection;
+import entity.Directory;
 import entity.MyFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -13,13 +15,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import service.DirectoryService;
 import service.FileService;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -27,14 +34,17 @@ public class FileController {
     @Autowired
     FileService fileService;
 
+    @Resource
+    DirectoryService directoryService;
+
     @RequestMapping(value = "/UploadFile",method = RequestMethod.POST)
-    public String uploadFiles(MultipartFile [] files,Model m,HttpServletRequest req) throws IOException {
+    public String uploadFiles(MultipartFile [] files,Model m,HttpServletRequest req,String path) throws IOException {
         String os=System.getProperty("os.name");
         int i=0;//上传成功数
         int j=0;//上传失败数
         for(MultipartFile file:files){
             if(os.contains("Windows")) {
-                if (uploadFile(file, req, m)) {
+                if (uploadFile(file, req, m,path)) {
                     i++;
                 } else {
                     j++;
@@ -56,21 +66,30 @@ public class FileController {
         return "uploadFile";
     }
     @Transactional
-    public boolean uploadFile(MultipartFile file, HttpServletRequest request, Model m) throws IOException {
+    public boolean uploadFile(MultipartFile file, HttpServletRequest request, Model m,String path) throws IOException {
         if(!file.isEmpty()) {//判断文件是否存在
             String username = (String) request.getSession().getAttribute("username");
             String fakefilename = file.getOriginalFilename();//不带+序号判断的假名字
-            String path = "C:\\upload\\" + username;
+            String[] split = path.split("\\\\");
+            StringBuilder newPath= new StringBuilder();
+            if(split[0].equals("C:")&&split[1].equals("upload")){//处理路径字符串
+                split[2]=username;
+                for(String tPath:split){
+                    newPath.append(tPath).append(File.separator);
+                }
+            }else{
+                return false;
+            }
             MyFile myFile = new MyFile();
             myFile.setUsername(username);
             myFile.setSize(String.valueOf(file.getSize()));
             myFile.setFakename(fakefilename);
             fileService.uploadFile(myFile);
             String truefilename = myFile.getId() + "+" + fakefilename;//带+序号的实际文件名
-            myFile.setPath(path + "\\" + truefilename);
+            myFile.setPath(newPath + truefilename);
             myFile.setFilename(truefilename);
             fileService.updateFile(myFile);
-            File uploadfile = new File(path, myFile.getFilename());
+            File uploadfile = new File(String.valueOf(newPath), myFile.getFilename());
             if (!uploadfile.exists()) {
                 uploadfile.mkdirs();
             }
@@ -116,14 +135,31 @@ public class FileController {
         return true;
     }
     @RequestMapping("/ListFile")
-    public String listFile(HttpServletRequest req,Model m){
+    public String listFile(HttpServletRequest req,Model m,String path){
         HttpSession session=req.getSession();
         String username= (String) session.getAttribute("username");
+        List<MyFile> result = null;
         if(username==null){
             return "redirect:/SignIn";
         }
-        List<MyFile> myFiles=fileService.listFile(username);
-        m.addAttribute("list",myFiles);
+        File file=new File(path);
+        if(file.isDirectory()){
+            File[] listFiles = file.listFiles();
+            if(listFiles!=null&&listFiles.length>0){
+                result=new ArrayList<>();
+                for(File tempFile:listFiles){
+                    if(tempFile.isFile()){
+                        MyFile myFile=fileService.findFileByNameAndUsername(tempFile.getName(),username);
+                        if(myFile!=null) {
+                            result.add(myFile);
+                        }
+                    }
+                }
+            }
+        }
+        List<Directory> directories=directoryService.getAllDirectory(path,username);
+        m.addAttribute("directories",directories);
+        m.addAttribute("list",result);
         return "forward:listCommon";
     }
 

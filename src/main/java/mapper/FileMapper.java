@@ -11,4 +11,5 @@ public interface FileMapper {
     boolean deleteFile(Integer id);
     MyFile findFile(Integer id);
     boolean updateFile(MyFile myFile);
+    MyFile findFileByNameAndUsername(@Param("filename")String filename,@Param("username")String username);
 }

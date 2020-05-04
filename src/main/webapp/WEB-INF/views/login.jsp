@@ -602,7 +602,13 @@
 					</button>
 					<div class="collapse" id="collapseExample">
 						<div class="well" style="overflow: scroll;height: 400px">
-							<label style="!important; color:red">版本1.6</label>
+							<label style="!important; color:black">版本1.7</label>
+							<ul>
+								<li>--------------------------------------</li>
+								<li style="!important;text-align: left;font-weight: bold">添加文件目录系统（仅适配Windows服务器)</li>
+								<li>--------------------------------------</li>
+							</ul>
+							<label style="!important; color:black">版本1.6</label>
 							<ul>
 								<li>--------------------------------------</li>
 								<li style="!important;text-align: left;font-weight: bold">把提交评论修改为ajax实现</li>

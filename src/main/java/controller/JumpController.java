@@ -1,6 +1,7 @@
 package controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -14,7 +15,8 @@ public class JumpController {
         return "signUp";
     }
     @RequestMapping("/upload")
-    public String jump3(){
+    public String jump3(Model m, String path){
+        m.addAttribute("path",path);
         return "uploadFile";
     }
 }

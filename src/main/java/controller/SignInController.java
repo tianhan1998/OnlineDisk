@@ -33,6 +33,11 @@ public class SignInController {
                 cookie.setMaxAge(3600*24*30);
                 response.addCookie(cookie);
             }
+            if(System.getProperty("os").equals("Windows")) {
+                m.addAttribute("path", "C:\\upload\\" + username);
+            }else if(System.getProperty("os").equals("Linux")){
+                m.addAttribute("path","/home/upload/"+username);
+            }
             return "redirect:/ListFile";
         }else{
             m.addAttribute("Error","用户名或密码错误");
