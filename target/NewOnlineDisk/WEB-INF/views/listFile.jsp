@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="java.io.File" %>
 <html>
 <head>
     <meta charset="utf-8">
@@ -24,6 +25,7 @@
     <script>DD_belatedPNG.fix('*');</script>
     <![endif]-->
     <title>用户管理</title>
+
 </head>
 <body>
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> ${sessionScope.username} <span class="c-gray en">&gt;</span> 文件列表 </nav>
@@ -56,12 +58,24 @@
             </tr>
             </thead>
             <tbody>
+            <c:forEach items="${directories }" var="d" varStatus="stat">
+                <tr class="text-c">
+                    <span style="display: none" id="dpath${stat.index}">${d.path}</span>
+                    <td></td>
+                    <td><a href="#" onclick="changeDirectory('${d.dName}','${stat.index}')">${d.dName}</a></td>
+                    <td>${sessionScope.get("username")}</td>
+                    <td>></td>
+                    <td class="td-manage">
+                        <a title="删除" href="${pageContext.request.contextPath}/DeleteFile/" onclick="return checkDelete()" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
+                    </td>
+                </tr>
+            </c:forEach>
             <c:forEach items="${list }" var="list" varStatus="stat">
                 <tr class="text-c">
                     <td>${list.id }</td>
                     <td>${list.fakename}</td>
                     <td>${list.username}</td>
-                    <td><fmt:formatNumber type="number" value="${list.size/1048576}" maxFractionDigits="2"></fmt:formatNumber></td>
+                    <td><fmt:formatNumber type="number" value="${list.size/1048576}" maxFractionDigits="2"/></td>
                     <td class="td-manage">
                         <a title="下载" href="${pageContext.request.contextPath}/DownLoad/${list.id}" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6de;</i></a>
                         <a title="删除" href="${pageContext.request.contextPath}/DeleteFile/${list.id}" onclick="return checkDelete()" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
@@ -82,6 +96,7 @@
             <jsp:useBean id="now" class="java.util.Date"/>
             <input name="comment_day" value="<fmt:formatDate value="${now}" pattern="yyyy-MM-dd HH:mm:ss"/>" type="hidden"/>
             <input class="btn" type="submit" onclick="submitCommon($('#common_form'));" value="提交评论"/>
+            <input type="hidden" value="${param.path}" id="path"/>
         </form>
     </div>
 </div>
@@ -133,6 +148,15 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/front/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/front/lib/laypage/1.2/laypage.js"></script>
 <script type="text/javascript">
+
+    function changeDirectory(dName,index){
+        if(dName!=="..") {
+            var path = $("#path").val() + "\\" + dName;
+        }else{
+            var path=$("#dpath"+index).html();
+        }
+        window.location.href="${pageContext.request.contextPath}/ListFile?path="+encodeURIComponent(path);
+    }
     function submitCommon(form){
         if(form.text.value==""){
             alert("评论不能为空");
@@ -145,6 +169,7 @@
             data:form.serialize(),
             success:function(result){
                 if(result.success=="true"){
+                    $("#tip").html(result.Message);
                     var target=$('.comment');
                     var newitem=document.createElement("div");
                     var html1="<div class=\"comment-wrap\">";
@@ -163,6 +188,8 @@
                     var html14="<li class=\"complain\">Complain</li>";
                     var html15="<li class=\"reply\">Reply</li></ul></div></div></div>";
                     target.children('.comment-wrap').first().before(html1+html2+html3+html4+html5+html6+html7+html8+html9+html10+html11+html12+html13+html14+html15)
+                }else{
+                    $("#tip").html(result.Error);
                 }
             }
         });
@@ -224,8 +251,8 @@
                 {"orderable":false,"aTargets":[1,2,3,4]}// 制定列不参与排序
             ]
         });
-
     });
+
     function checkDelete(){
         if(confirm("您真的要删除吗?")==true){
             return true;
@@ -239,6 +266,7 @@
     }
     /*用户-查看*/
     function member_show(title,url,id,w,h){
+        url=url+"?path="+encodeURIComponent($("#path").val());
         layer_show(title,url,w,h);
     }
 

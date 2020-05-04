@@ -33,9 +33,9 @@ public class SignInController {
                 cookie.setMaxAge(3600*24*30);
                 response.addCookie(cookie);
             }
-            if(System.getProperty("os").equals("Windows")) {
+            if(System.getProperty("os.name").contains("Windows")) {
                 m.addAttribute("path", "C:\\upload\\" + username);
-            }else if(System.getProperty("os").equals("Linux")){
+            }else if(System.getProperty("os.name").contains("Linux")){
                 m.addAttribute("path","/home/upload/"+username);
             }
             return "redirect:/ListFile";

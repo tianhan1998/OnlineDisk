@@ -21,6 +21,10 @@
         delete from file where id=#{id}
     </delete>
 
+    <select id="findFileByNameAndUsername" resultType="MyFile">
+        select id, username, size, filename, path, fakename from file where filename=#{filename} and username=#{username}
+    </select>
+
     <select id="findFile" resultType="MyFile">
         select id,filename,username,size,path,fakename from file where id=#{id};
     </select>

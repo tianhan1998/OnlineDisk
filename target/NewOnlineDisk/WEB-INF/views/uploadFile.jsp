@@ -18,6 +18,7 @@
     <div class="form-group">
         <label for="UploadFile">选择文件</label>
         <input type="file" id="UploadFile" name="files" multiple="multiple">
+        <input type="hidden" name="path" value="${param.path}"/>
         <c:if test="${Message!=null}">
         <p class="help-block">${Message}</p>
         </c:if>
