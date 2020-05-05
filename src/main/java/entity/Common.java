@@ -3,13 +3,14 @@ package entity;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import java.util.Date;
 
 public class Common {
     private Integer id;
     private String username;
-    @NotBlank(message = "评论不能为空")
+    @NotEmpty(message = "评论不能为空")
     private String text;
     private long good_number;
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
