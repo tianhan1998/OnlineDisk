@@ -56,8 +56,8 @@ public class CommonController {
         }
         return json;
     }
-    @RequestMapping("/deleteCommon/{id}")
-    public String deleteCommon(@PathVariable("id")String id,HttpServletRequest req,Model m){
+    @RequestMapping("/deleteCommon")
+    public String deleteCommon(String id,HttpServletRequest req,Model m,String path){
         Integer cid=Integer.parseInt(id);
         Common common=service.findId(cid);
         HttpSession session=req.getSession();
@@ -75,6 +75,7 @@ public class CommonController {
         }else{
             m.addAttribute("Error","未找到此评论");
         }
+        m.addAttribute("path",path);
         return "forward:/ListFile";
     }
     @InitBinder

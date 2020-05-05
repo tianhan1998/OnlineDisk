@@ -25,16 +25,15 @@
     <script>DD_belatedPNG.fix('*');</script>
     <![endif]-->
     <title>用户管理</title>
-
 </head>
 <body>
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> ${sessionScope.username} <span class="c-gray en">&gt;</span> 文件列表 </nav>
 <div class="page-container">
-
     <div class="cl pd-5 bg-1 bk-gray mt-20">
         <span class="1">
             <a style="margin-right: 5px;"href="${pageContext.request.contextPath}\Exit" class="btn btn-danger radius"><i class="Hui-iconfont"></i> 退出</a>
             <a onclick="member_show('上传文件','${pageContext.request.contextPath}/upload','10001','500','300')" target="_blank" class="btn btn-primary radius"><i class="icon-trash"></i>上传文件</a>
+            <a onclick="createDir()" target="_blank" class="btn btn-success radius"><i class="icon-trash"></i>创建目录</a>
             <label id="tip" style="color: red">
             <c:if test="${Error!=null||Message!=null}">
                 ${Error==null?Message:Error}
@@ -50,7 +49,7 @@
         <table class="table table-border table-bordered table-hover table-bg table-sort">
             <thead>
             <tr class="text-c">
-                <th width="40">ID</th>
+                <th width="40">类型</th>
                 <th width="170">文件名</th>
                 <th width="50">存储人</th>
                 <th width="70">存储大小(MB)</th>
@@ -61,24 +60,26 @@
             <c:forEach items="${directories }" var="d" varStatus="stat">
                 <tr class="text-c">
                     <span style="display: none" id="dpath${stat.index}">${d.path}</span>
-                    <td></td>
+                    <td>文件夹</td>
                     <td><a href="#" onclick="changeDirectory('${d.dName}','${stat.index}')">${d.dName}</a></td>
                     <td>${sessionScope.get("username")}</td>
-                    <td>></td>
+                    <td></td>
                     <td class="td-manage">
-                        <a title="删除" href="${pageContext.request.contextPath}/DeleteFile/" onclick="return checkDelete()" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
+                        <c:if test="${d.dName!='..'}">
+                        <a title="删除" onclick="deleteDirectory('${d.dName}')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
+                        </c:if>
                     </td>
                 </tr>
             </c:forEach>
             <c:forEach items="${list }" var="list" varStatus="stat">
                 <tr class="text-c">
-                    <td>${list.id }</td>
+                    <td>文件</td>
                     <td>${list.fakename}</td>
                     <td>${list.username}</td>
                     <td><fmt:formatNumber type="number" value="${list.size/1048576}" maxFractionDigits="2"/></td>
                     <td class="td-manage">
                         <a title="下载" href="${pageContext.request.contextPath}/DownLoad/${list.id}" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6de;</i></a>
-                        <a title="删除" href="${pageContext.request.contextPath}/DeleteFile/${list.id}" onclick="return checkDelete()" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
+                        <a title="删除" href="#" onclick="checkDelete('${list.id}')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
                     </td>
                 </tr>
             </c:forEach>
@@ -97,6 +98,7 @@
             <input name="comment_day" value="<fmt:formatDate value="${now}" pattern="yyyy-MM-dd HH:mm:ss"/>" type="hidden"/>
             <input class="btn" type="submit" onclick="submitCommon($('#common_form'));" value="提交评论"/>
             <input type="hidden" value="${param.path}" id="path"/>
+            <input type="hidden" id="file_separator" value="${File.separator}">
         </form>
     </div>
 </div>
@@ -129,7 +131,7 @@
                         </c:choose>
                     </li>
                     <c:if test="${common.username==sessionScope.username}">
-                        <li class="complain"><a onclick="return checkDelete();" href="${pageContext.request.contextPath}/deleteCommon/${common.id}">Delete</a></li>
+                        <li class="complain"><a onclick="deleteCommon('${common.id}');" href="#">Delete</a></li>
                     </c:if>
                 </ul>
             </div>
@@ -147,15 +149,35 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/front/lib/My97DatePicker/4.8/WdatePicker.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/front/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/front/lib/laypage/1.2/laypage.js"></script>
+<script src="${pageContext.request.contextPath}/front/js/sweetalert.min.js"></script>
 <script type="text/javascript">
+    function deleteCommon(id) {
+        var path="${pageContext.request.contextPath}/deleteCommon?id="+id+"&path="+encodeURIComponent($("#path").val());
+        window.location.href=path;
+    }
+    function createDir(){
+        swal("请输入您要创建的文件夹名",{content:"input"}).then(value => {
+            if(value!==""){
+                window.location.href="${pageContext.request.contextPath}/createDir?path="+encodeURIComponent($("#path").val())+"&name="+encodeURIComponent(value.toString());
+            }else{
+                swal("不能输入空文件夹名",{icon:"warning"});
+            }
+        })
+    }
 
     function changeDirectory(dName,index){
         if(dName!=="..") {
-            var path = $("#path").val() + "\\" + dName;
+            var path = $("#path").val() +$("#file_separator").val() + dName;
         }else{
             var path=$("#dpath"+index).html();
         }
         window.location.href="${pageContext.request.contextPath}/ListFile?path="+encodeURIComponent(path);
+    }
+    function deleteDirectory(dName) {
+        if(confirm("您真的要删除目录吗?")===true) {
+            var path = $("#path").val() + $("#file_separator").val() + dName;
+            window.location.href="${pageContext.request.contextPath}/DeleteDir?path="+encodeURIComponent(path)+"&oldPath="+encodeURIComponent($("#path").val());
+        }
     }
     function submitCommon(form){
         if(form.text.value==""){
@@ -184,7 +206,7 @@
                     var html10="<p id=\"goodnumber\" style=\"display: inline\" class=\"goodnumber\">("+result.good_number+")</p>";
                     var html11="<a href=\"javascript:good("+result.id+","+result.good_number+");\">";
                     var html12="<span class=\"glyphicon glyphicon-thumbs-up\"></span></a></div>";
-                    var html13="<li class=\"complain\"><a onclick=\"return checkDelete();\" href=\"${pageContext.request.contextPath}/deleteCommon/"+result.id+"\">Delete</a></li>";
+                    var html13="<li class=\"complain\"><a onclick=\" deleteCommon("+result.id+");\">Delete</a></li>";
                     var html14="<li class=\"complain\">Complain</li>";
                     var html15="<li class=\"reply\">Reply</li></ul></div></div></div>";
                     target.children('.comment-wrap').first().before(html1+html2+html3+html4+html5+html6+html7+html8+html9+html10+html11+html12+html13+html14+html15)
@@ -253,11 +275,10 @@
         });
     });
 
-    function checkDelete(){
-        if(confirm("您真的要删除吗?")==true){
-            return true;
-        }else{
-            return false;
+    function checkDelete(id){
+        if(confirm("您真的要删除吗?")===true){
+            var path="${pageContext.request.contextPath}/DeleteFile/?id="+id+"&path="+encodeURIComponent($("#path").val());
+            window.location.href=path;
         }
     }
     /*用户-添加*/

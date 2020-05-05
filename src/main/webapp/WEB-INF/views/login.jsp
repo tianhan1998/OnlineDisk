@@ -602,6 +602,13 @@
 					</button>
 					<div class="collapse" id="collapseExample">
 						<div class="well" style="overflow: scroll;height: 400px">
+							<label style="!important; color:red">版本1.8</label>
+							<ul>
+								<li>--------------------------------------</li>
+								<li style="!important;text-align: left;font-weight: bold">文件目录系统适配Linux服务器</li>
+								<li style="!important;text-align: left;font-weight: bold">实现删除目录以及新建目录功能</li>
+								<li>--------------------------------------</li>
+							</ul>
 							<label style="!important; color:black">版本1.7</label>
 							<ul>
 								<li>--------------------------------------</li>

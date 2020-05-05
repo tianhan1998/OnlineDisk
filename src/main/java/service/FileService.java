@@ -29,4 +29,7 @@ public class FileService {
     public MyFile findFileByNameAndUsername(String filename,String username){
         return fileMapper.findFileByNameAndUsername(filename,username);
     }
+    public int deleteFileByName(String filename){
+        return fileMapper.deleteFileByName(filename);
+    }
 }

@@ -23,7 +23,11 @@ public class HelloController {
             if (target != null) {
                 HttpSession session = request.getSession();
                 session.setAttribute("username", target.getValue());
-                m.addAttribute("path","C:\\upload\\"+target.getValue());
+                if(System.getProperty("os.name").contains("Windows")) {
+                    m.addAttribute("path", "C:\\upload\\" + target.getValue());
+                }else if(System.getProperty("os.name").contains("Linux")){
+                    m.addAttribute("path","/home/upload/"+target.getValue());
+                }
                 return "redirect:/ListFile";
             }
         }

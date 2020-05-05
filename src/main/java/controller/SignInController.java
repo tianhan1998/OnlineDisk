@@ -45,9 +45,15 @@ public class SignInController {
         return "login";
     }
     @RequestMapping("/SignIn")//直接访问界面
-    public ModelAndView signIn(HttpServletRequest request){
+    public ModelAndView signIn(HttpServletRequest request,Model m){
         HttpSession session=request.getSession();
-        if(session.getAttribute("username")!=null){//session有记录直接进入查询
+        String username= (String) session.getAttribute("username");
+        if(username!=null){//session有记录直接进入查询
+            if(System.getProperty("os.name").contains("Windows")) {
+                m.addAttribute("path", "C:\\upload\\" + username);
+            }else if(System.getProperty("os.name").contains("Linux")){
+                m.addAttribute("path","/home/upload/"+username);
+            }
             return new ModelAndView("redirect:/ListFile");
         }else{
             return new ModelAndView("redirect:/");

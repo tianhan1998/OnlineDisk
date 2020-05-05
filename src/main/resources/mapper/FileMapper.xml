@@ -28,4 +28,8 @@
     <select id="findFile" resultType="MyFile">
         select id,filename,username,size,path,fakename from file where id=#{id};
     </select>
+
+    <delete id="deleteFileByName">
+        delete from file where filename=#{filename}
+    </delete>
 </mapper>
