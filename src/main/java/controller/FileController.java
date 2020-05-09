@@ -76,8 +76,8 @@ public class FileController {
             }else if(System.getProperty("os.name").contains("Linux")){
                 String[] split = path.split("/");
                 newPath= new StringBuilder("/");
-                if(split[0].equals("home")&&split[1].equals("upload")){//处理路径字符串
-                    split[2]=username;
+                if(split[1].equals("home")&&split[2].equals("upload")){//处理路径字符串
+                    split[3]=username;
                     for(String tPath:split){
                         newPath.append(tPath).append(File.separator);
                     }
